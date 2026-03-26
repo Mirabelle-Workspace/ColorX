@@ -1,0 +1,629 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ColorX -- Generator</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: #f5f5f5;
+      color: #1a1a1a;
+      padding: 0;
+    }
+
+    nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1.25rem 2rem;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .logo {
+      font-size: 1.2rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      text-decoration: none;
+      color: #1a1a1a;
+    }
+
+    .nav-link {
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: #1a1a1a;
+      text-decoration: none;
+      padding: 0.5rem 1.25rem;
+      border-radius: 8px;
+      background: #f0f0f0;
+      transition: background 0.2s;
+    }
+    .nav-link:hover { background: #e0e0e0; }
+
+    .main { max-width: 1200px; margin: 0 auto; padding: 1rem 2rem 3rem; }
+
+    h1 { font-size: 1.75rem; margin-bottom: 0.25rem; }
+    h2 { font-size: 1.1rem; margin-bottom: 1rem; font-weight: 500; }
+    h3 { font-size: 0.95rem; margin-bottom: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em; }
+
+    .header {
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+
+    .subtitle {
+      color: #666;
+      font-size: 0.95rem;
+    }
+
+    .controls {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 1rem;
+      margin-bottom: 2.5rem;
+      flex-wrap: wrap;
+    }
+
+    .color-input-group {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: #fff;
+      border: 2px solid #ddd;
+      border-radius: 12px;
+      padding: 0.5rem 1rem;
+    }
+
+    input[type="color"] {
+      width: 48px;
+      height: 48px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      background: none;
+    }
+
+    input[type="text"] {
+      width: 120px;
+      font-size: 1.1rem;
+      font-family: monospace;
+      border: none;
+      outline: none;
+      text-transform: uppercase;
+    }
+
+    .btn {
+      padding: 0.75rem 1.5rem;
+      font-size: 1rem;
+      font-weight: 600;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      background: #1a1a1a;
+      color: #fff;
+      transition: opacity 0.2s;
+    }
+    .btn:hover { opacity: 0.85; }
+
+    .themes {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2rem;
+      margin-bottom: 2.5rem;
+    }
+
+    @media (max-width: 800px) {
+      .themes { grid-template-columns: 1fr; }
+    }
+
+    .theme-card {
+      border-radius: 16px;
+      padding: 1.5rem;
+      transition: all 0.3s;
+    }
+
+    .swatch-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+      gap: 0.75rem;
+      margin-bottom: 1.25rem;
+    }
+
+    .swatch {
+      border-radius: 10px;
+      padding: 0.75rem;
+      font-size: 0.75rem;
+      font-family: monospace;
+      min-height: 72px;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      gap: 0.25rem;
+      border: 1px solid rgba(128,128,128,0.15);
+      cursor: pointer;
+      transition: transform 0.15s;
+    }
+    .swatch:hover { transform: scale(1.03); }
+    .swatch:active::after { content: "Copied!"; font-size: 0.65rem; }
+
+    .swatch-name {
+      font-weight: 600;
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    .swatch-hex { opacity: 0.8; }
+
+    .preview-section {
+      margin-top: 1.25rem;
+      border-radius: 12px;
+      padding: 1.25rem;
+    }
+
+    .preview-section .btn-preview {
+      display: inline-block;
+      padding: 0.6rem 1.2rem;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 0.9rem;
+      border: none;
+      cursor: pointer;
+      margin-right: 0.5rem;
+      margin-top: 0.5rem;
+    }
+
+    .preview-section .card-preview {
+      border-radius: 10px;
+      padding: 1rem;
+      margin-top: 0.75rem;
+    }
+
+    .contrast-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.8rem;
+      margin-top: 1rem;
+    }
+
+    .contrast-table th, .contrast-table td {
+      padding: 0.4rem 0.6rem;
+      text-align: left;
+      border-bottom: 1px solid rgba(128,128,128,0.15);
+    }
+
+    .contrast-table th {
+      font-weight: 600;
+      text-transform: uppercase;
+      font-size: 0.7rem;
+      letter-spacing: 0.04em;
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 0.15rem 0.4rem;
+      border-radius: 4px;
+      font-size: 0.7rem;
+      font-weight: 600;
+    }
+
+    .badge-pass { background: #d4edda; color: #155724; }
+    .badge-large { background: #fff3cd; color: #856404; }
+    .badge-fail { background: #f8d7da; color: #721c24; }
+
+    .css-output {
+      margin-top: 2rem;
+      background: #1e1e1e;
+      border-radius: 12px;
+      padding: 1.5rem;
+      overflow-x: auto;
+    }
+
+    .css-output pre {
+      color: #d4d4d4;
+      font-size: 0.8rem;
+      line-height: 1.6;
+      white-space: pre;
+    }
+
+    .css-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+    }
+
+    .css-header h3 { color: #aaa; margin: 0; }
+
+    .copy-btn {
+      background: #333;
+      color: #ccc;
+      border: 1px solid #555;
+      padding: 0.4rem 0.8rem;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 0.8rem;
+    }
+    .copy-btn:hover { background: #444; }
+
+    footer {
+      text-align: center;
+      padding: 2.5rem 2rem;
+      font-size: 0.85rem;
+      color: #999;
+      line-height: 1.8;
+      border-top: 1px solid #e8e8e8;
+    }
+
+    .footer-credits { margin-bottom: 0.75rem; }
+    .footer-credits a { color: #777; text-decoration: none; }
+    .footer-credits a:hover { text-decoration: underline; }
+
+    .footer-copyright {
+      margin-bottom: 0.75rem;
+      font-weight: 500;
+      color: #888;
+    }
+
+    .footer-links {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 1.25rem;
+      margin-top: 0.5rem;
+    }
+
+    .footer-links a {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      color: #777;
+      text-decoration: none;
+      font-size: 0.8rem;
+      transition: color 0.2s;
+    }
+    .footer-links a:hover { color: #333; }
+    .footer-links svg { width: 16px; height: 16px; fill: currentColor; }
+  </style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="logo">ColorX</a>
+  <a href="index.html" class="nav-link">How It Works</a>
+</nav>
+
+<div class="main">
+  <div class="header">
+    <h1>Generate Your Theme</h1>
+    <p class="subtitle">Pick a color. Get WCAG-compliant light and dark themes instantly.</p>
+  </div>
+
+  <div class="controls">
+    <div class="color-input-group">
+      <input type="color" id="colorPicker" value="#6366f1" />
+      <input type="text" id="hexInput" value="#6366f1" maxlength="7" />
+    </div>
+    <button class="btn" onclick="generate()">Generate Theme</button>
+  </div>
+
+  <div id="output"></div>
+</div>
+
+<footer>
+  <div class="footer-copyright">2026 | Mirabelle Doiron</div>
+  <div class="footer-credits">
+    Inspired by <a href="https://www.color-hex.com/" target="_blank" rel="noopener">color-hex.com</a>.
+    Contrast ratios calculated per <a href="https://www.w3.org/TR/WCAG21/#contrast-minimum" target="_blank" rel="noopener">WCAG 2.1</a>.
+  </div>
+  <div class="footer-links">
+    <a href="https://www.mirabelledoiron.com/" target="_blank" rel="noopener">
+      <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/></svg>
+      Portfolio
+    </a>
+    <a href="https://github.com/mirabelledoiron" target="_blank" rel="noopener">
+      <svg viewBox="0 0 24 24"><path d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"/></svg>
+      GitHub
+    </a>
+    <a href="https://www.linkedin.com/in/mirabelledoiron" target="_blank" rel="noopener">
+      <svg viewBox="0 0 24 24"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+      LinkedIn
+    </a>
+  </div>
+</footer>
+
+<script>
+function hexToRgb(hex) {
+  const clean = hex.replace(/^#/, '');
+  const full = clean.length === 3
+    ? clean.split('').map(c => c + c).join('')
+    : clean;
+  return [
+    parseInt(full.slice(0, 2), 16),
+    parseInt(full.slice(2, 4), 16),
+    parseInt(full.slice(4, 6), 16),
+  ];
+}
+
+function rgbToHex([r, g, b]) {
+  return '#' + [r, g, b]
+    .map(v => Math.max(0, Math.min(255, Math.round(v))).toString(16).padStart(2, '0'))
+    .join('');
+}
+
+function rgbToHsl([r, g, b]) {
+  const rn = r / 255, gn = g / 255, bn = b / 255;
+  const max = Math.max(rn, gn, bn), min = Math.min(rn, gn, bn);
+  const l = (max + min) / 2;
+  if (max === min) return [0, 0, l];
+  const d = max - min;
+  const s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+  let h = 0;
+  if (max === rn) h = ((gn - bn) / d + (gn < bn ? 6 : 0)) / 6;
+  else if (max === gn) h = ((bn - rn) / d + 2) / 6;
+  else h = ((rn - gn) / d + 4) / 6;
+  return [h * 360, s, l];
+}
+
+function hslToRgb([h, s, l]) {
+  const hN = ((h % 360) + 360) % 360;
+  if (s === 0) { const v = Math.round(l * 255); return [v, v, v]; }
+  const hue2rgb = (p, q, t) => {
+    let tn = t;
+    if (tn < 0) tn += 1; if (tn > 1) tn -= 1;
+    if (tn < 1/6) return p + (q - p) * 6 * tn;
+    if (tn < 1/2) return q;
+    if (tn < 2/3) return p + (q - p) * (2/3 - tn) * 6;
+    return p;
+  };
+  const q = l < 0.5 ? l * (1 + s) : l + s - l * s;
+  const p = 2 * l - q;
+  const hNorm = hN / 360;
+  return [
+    Math.round(hue2rgb(p, q, hNorm + 1/3) * 255),
+    Math.round(hue2rgb(p, q, hNorm) * 255),
+    Math.round(hue2rgb(p, q, hNorm - 1/3) * 255),
+  ];
+}
+
+function relativeLuminance([r, g, b]) {
+  const [rs, gs, bs] = [r, g, b].map(c => {
+    const s = c / 255;
+    return s <= 0.03928 ? s / 12.92 : ((s + 0.055) / 1.055) ** 2.4;
+  });
+  return 0.2126 * rs + 0.7152 * gs + 0.0722 * bs;
+}
+
+function contrastRatio(c1, c2) {
+  const l1 = relativeLuminance(hexToRgb(c1));
+  const l2 = relativeLuminance(hexToRgb(c2));
+  const lighter = Math.max(l1, l2), darker = Math.min(l1, l2);
+  return (lighter + 0.05) / (darker + 0.05);
+}
+
+function checkContrast(fg, bg) {
+  const ratio = contrastRatio(fg, bg);
+  return {
+    ratio: Math.round(ratio * 100) / 100,
+    aa: ratio >= 4.5,
+    aaLarge: ratio >= 3,
+    aaa: ratio >= 7,
+    aaaLarge: ratio >= 4.5,
+  };
+}
+
+function adjustLightness(hex, targetL) {
+  const hsl = rgbToHsl(hexToRgb(hex));
+  return rgbToHex(hslToRgb([hsl[0], hsl[1], Math.max(0, Math.min(1, targetL))]));
+}
+
+function mixColors(hex1, hex2, weight) {
+  const [r1,g1,b1] = hexToRgb(hex1), [r2,g2,b2] = hexToRgb(hex2);
+  const w = Math.max(0, Math.min(1, weight));
+  return rgbToHex([r1*w+r2*(1-w), g1*w+g2*(1-w), b1*w+b2*(1-w)]);
+}
+
+function ensureContrast(fg, bg, minRatio, mode) {
+  let current = fg;
+  const hsl = rgbToHsl(hexToRgb(current));
+  let l = hsl[2];
+  const step = mode === 'lighten' ? 0.02 : -0.02;
+  for (let i = 0; i < 60; i++) {
+    if (contrastRatio(current, bg) >= minRatio) return current;
+    l = Math.max(0, Math.min(1, l + step));
+    current = rgbToHex(hslToRgb([hsl[0], hsl[1], l]));
+  }
+  return current;
+}
+
+function genSemantic(hue, sat, light, bg, mode) {
+  const base = rgbToHex(hslToRgb([hue, sat, light]));
+  return ensureContrast(base, bg, 3, mode === 'light' ? 'darken' : 'lighten');
+}
+
+function generateLightTheme(hex) {
+  const background = '#ffffff';
+  const surface = adjustLightness(hex, 0.97);
+  const surfaceAlt = adjustLightness(hex, 0.93);
+  let primary = hex;
+  if (contrastRatio(primary, background) < 4.5) primary = ensureContrast(primary, background, 4.5, 'darken');
+  const pHsl = rgbToHsl(hexToRgb(primary));
+  const primaryHover = rgbToHex(hslToRgb([pHsl[0], pHsl[1], Math.max(0, pHsl[2] - 0.08)]));
+  const pLum = relativeLuminance(hexToRgb(primary));
+  let primaryText = pLum > 0.179 ? '#000000' : '#ffffff';
+  primaryText = ensureContrast(primaryText, primary, 4.5, pLum > 0.179 ? 'darken' : 'lighten');
+  const text = ensureContrast('#1a1a1a', background, 7, 'darken');
+  const textSecondary = ensureContrast(mixColors(hex, '#333333', 0.2), background, 4.5, 'darken');
+  const textMuted = ensureContrast(adjustLightness(hex, 0.4), background, 3, 'darken');
+  const border = adjustLightness(hex, 0.78);
+  const borderLight = adjustLightness(hex, 0.88);
+  return {
+    background, surface, surfaceAlt, primary, primaryHover, primaryText,
+    text, textSecondary, textMuted, border, borderLight,
+    success: genSemantic(145, 0.65, 0.35, background, 'light'),
+    warning: genSemantic(38, 0.85, 0.45, background, 'light'),
+    error: genSemantic(0, 0.7, 0.45, background, 'light'),
+    info: genSemantic(210, 0.7, 0.45, background, 'light'),
+  };
+}
+
+function generateDarkTheme(hex) {
+  const background = '#121212';
+  const surface = mixColors(hex, '#1a1a1a', 0.08);
+  const surfaceAlt = mixColors(hex, '#242424', 0.12);
+  let primary = adjustLightness(hex, 0.6);
+  if (contrastRatio(primary, background) < 4.5) primary = ensureContrast(primary, background, 4.5, 'lighten');
+  const pHsl = rgbToHsl(hexToRgb(primary));
+  const primaryHover = rgbToHex(hslToRgb([pHsl[0], pHsl[1], Math.min(1, pHsl[2] + 0.08)]));
+  const pLum = relativeLuminance(hexToRgb(primary));
+  let primaryText = pLum > 0.179 ? '#000000' : '#ffffff';
+  primaryText = ensureContrast(primaryText, primary, 4.5, pLum > 0.179 ? 'darken' : 'lighten');
+  const text = ensureContrast('#e8e8e8', background, 7, 'lighten');
+  const textSecondary = ensureContrast(mixColors(hex, '#bbbbbb', 0.2), background, 4.5, 'lighten');
+  const textMuted = ensureContrast(adjustLightness(hex, 0.55), background, 3, 'lighten');
+  const border = mixColors(hex, '#333333', 0.15);
+  const borderLight = mixColors(hex, '#222222', 0.1);
+  return {
+    background, surface, surfaceAlt, primary, primaryHover, primaryText,
+    text, textSecondary, textMuted, border, borderLight,
+    success: genSemantic(145, 0.55, 0.55, background, 'dark'),
+    warning: genSemantic(38, 0.75, 0.6, background, 'dark'),
+    error: genSemantic(0, 0.6, 0.6, background, 'dark'),
+    info: genSemantic(210, 0.6, 0.6, background, 'dark'),
+  };
+}
+
+function auditTheme(theme) {
+  return {
+    'text / background': checkContrast(theme.text, theme.background),
+    'textSecondary / background': checkContrast(theme.textSecondary, theme.background),
+    'textMuted / background': checkContrast(theme.textMuted, theme.background),
+    'primary / background': checkContrast(theme.primary, theme.background),
+    'primaryText / primary': checkContrast(theme.primaryText, theme.primary),
+    'text / surface': checkContrast(theme.text, theme.surface),
+    'text / surfaceAlt': checkContrast(theme.text, theme.surfaceAlt),
+    'success / background': checkContrast(theme.success, theme.background),
+    'warning / background': checkContrast(theme.warning, theme.background),
+    'error / background': checkContrast(theme.error, theme.background),
+    'info / background': checkContrast(theme.info, theme.background),
+  };
+}
+
+function themeToCssVars(theme, prefix) {
+  return Object.entries(theme)
+    .map(([key, value]) => {
+      const varName = key.replace(/([A-Z])/g, '-$1').toLowerCase();
+      return `  --${prefix}-${varName}: ${value};`;
+    }).join('\n');
+}
+
+// ---- UI ----
+
+const picker = document.getElementById('colorPicker');
+const hexInput = document.getElementById('hexInput');
+
+picker.addEventListener('input', () => { hexInput.value = picker.value; generate(); });
+hexInput.addEventListener('input', () => {
+  const val = hexInput.value.startsWith('#') ? hexInput.value : '#' + hexInput.value;
+  if (/^#[0-9a-fA-F]{6}$/.test(val)) { picker.value = val; generate(); }
+});
+
+function textColorFor(bg) {
+  return relativeLuminance(hexToRgb(bg)) > 0.179 ? '#000000' : '#ffffff';
+}
+
+function renderSwatches(theme) {
+  return Object.entries(theme).map(([name, color]) => {
+    const tc = textColorFor(color);
+    const label = name.replace(/([A-Z])/g, ' $1').trim();
+    return `<div class="swatch" style="background:${color}; color:${tc}" onclick="navigator.clipboard.writeText('${color}')">
+      <span class="swatch-name">${label}</span>
+      <span class="swatch-hex">${color}</span>
+    </div>`;
+  }).join('');
+}
+
+function renderContrast(audit) {
+  const rows = Object.entries(audit).map(([pair, r]) => {
+    let badge;
+    if (r.aa) badge = '<span class="badge badge-pass">AA</span>';
+    else if (r.aaLarge) badge = '<span class="badge badge-large">AA Large</span>';
+    else badge = '<span class="badge badge-fail">Fail</span>';
+    let badge2 = '';
+    if (r.aaa) badge2 = ' <span class="badge badge-pass">AAA</span>';
+    else if (r.aaaLarge) badge2 = ' <span class="badge badge-pass">AAA Large</span>';
+    return `<tr><td>${pair}</td><td>${r.ratio}:1</td><td>${badge}${badge2}</td></tr>`;
+  }).join('');
+  return `<table class="contrast-table">
+    <thead><tr><th>Pair</th><th>Ratio</th><th>Level</th></tr></thead>
+    <tbody>${rows}</tbody>
+  </table>`;
+}
+
+function renderPreview(theme) {
+  return `<div class="preview-section" style="background:${theme.background}; color:${theme.text}; border: 1px solid ${theme.border}">
+    <h3 style="color:${theme.text}; margin-bottom:0.5rem">UI Preview</h3>
+    <p style="color:${theme.textSecondary}; margin-bottom:0.5rem; font-size:0.9rem">Secondary text looks like this. Used for descriptions and metadata.</p>
+    <p style="color:${theme.textMuted}; margin-bottom:0.75rem; font-size:0.85rem">Muted text for timestamps and less important content.</p>
+    <button class="btn-preview" style="background:${theme.primary}; color:${theme.primaryText}">Primary Button</button>
+    <button class="btn-preview" style="background:${theme.primaryHover}; color:${theme.primaryText}">Hover State</button>
+    <button class="btn-preview" style="background:transparent; color:${theme.primary}; border: 2px solid ${theme.primary}">Outline</button>
+    <div class="card-preview" style="background:${theme.surface}; border: 1px solid ${theme.borderLight}; margin-top:1rem">
+      <p style="font-weight:600; margin-bottom:0.25rem">Surface Card</p>
+      <p style="color:${theme.textSecondary}; font-size:0.85rem">Content on a surface background.</p>
+    </div>
+    <div style="display:flex; gap:0.5rem; margin-top:0.75rem; flex-wrap:wrap">
+      <span style="color:${theme.success}; font-weight:600; font-size:0.85rem">Success</span>
+      <span style="color:${theme.warning}; font-weight:600; font-size:0.85rem">Warning</span>
+      <span style="color:${theme.error}; font-weight:600; font-size:0.85rem">Error</span>
+      <span style="color:${theme.info}; font-weight:600; font-size:0.85rem">Info</span>
+    </div>
+  </div>`;
+}
+
+function generate() {
+  const hex = hexInput.value.startsWith('#') ? hexInput.value : '#' + hexInput.value;
+  if (!/^#[0-9a-fA-F]{6}$/.test(hex) && !/^#[0-9a-fA-F]{3}$/.test(hex)) return;
+
+  const light = generateLightTheme(hex);
+  const dark = generateDarkTheme(hex);
+  const lightAudit = auditTheme(light);
+  const darkAudit = auditTheme(dark);
+
+  const css = `:root {\n${themeToCssVars(light, 'color')}\n}\n\n@media (prefers-color-scheme: dark) {\n  :root {\n${themeToCssVars(dark, 'color')}\n  }\n}\n\n[data-theme="light"] {\n${themeToCssVars(light, 'color')}\n}\n\n[data-theme="dark"] {\n${themeToCssVars(dark, 'color')}\n}`;
+
+  document.getElementById('output').innerHTML = `
+    <div class="themes">
+      <div class="theme-card" style="background: #fff; border: 1px solid #e0e0e0;">
+        <h2>Light Theme</h2>
+        <div class="swatch-grid">${renderSwatches(light)}</div>
+        ${renderPreview(light)}
+        <h3 style="margin-top:1rem">Contrast Audit</h3>
+        ${renderContrast(lightAudit)}
+      </div>
+      <div class="theme-card" style="background: #1e1e1e; color: #e0e0e0; border: 1px solid #333;">
+        <h2>Dark Theme</h2>
+        <div class="swatch-grid">${renderSwatches(dark)}</div>
+        ${renderPreview(dark)}
+        <h3 style="margin-top:1rem; color:#aaa">Contrast Audit</h3>
+        ${renderContrast(darkAudit)}
+      </div>
+    </div>
+    <div class="css-output">
+      <div class="css-header">
+        <h3>CSS Variables</h3>
+        <button class="copy-btn" onclick="navigator.clipboard.writeText(document.getElementById('cssCode').textContent).then(()=>this.textContent='Copied!')">Copy</button>
+      </div>
+      <pre id="cssCode">${css}</pre>
+    </div>
+  `;
+}
+
+generate();
+</script>
+</body>
+</html>

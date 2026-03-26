@@ -1,0 +1,15 @@
+{
+  "name": "colorx",
+  "version": "1.0.0",
+  "description": "ColorX -- Generate ADA-compliant light and dark themes from a single hex color. colorx.dev",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "demo": "npx ts-node src/demo.ts"
+  },
+  "devDependencies": {
+    "typescript": "^5.4.0",
+    "ts-node": "^10.9.0"
+  }
+}
