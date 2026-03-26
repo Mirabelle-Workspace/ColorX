@@ -1,0 +1,8 @@
+{
+  "buildCommand": null,
+  "outputDirectory": ".",
+  "routes": [
+    { "src": "/generator", "dest": "/generator.html" },
+    { "src": "/(.*)", "dest": "/$1" }
+  ]
+}

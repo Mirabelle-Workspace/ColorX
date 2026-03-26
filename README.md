@@ -61,6 +61,14 @@ Outputs compiled JS and type declarations to `dist/`.
 4. Generates semantic colors (success, warning, error, info) with guaranteed contrast
 5. Outputs everything as CSS custom properties
 
+## Author
+
+Mirabelle Doiron
+
+- [Portfolio](https://www.mirabelledoiron.com/)
+- [GitHub](https://github.com/mirabelledoiron)
+- [LinkedIn](https://www.linkedin.com/in/mirabelledoiron)
+
 ## License
 
-2026 Mirabelle Doiron
+All rights reserved. This project is not licensed for reuse, modification, or distribution.
