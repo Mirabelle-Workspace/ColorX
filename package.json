@@ -1,15 +1,12 @@
 {
   "name": "colorx",
-  "version": "1.0.0",
-  "description": "ColorX -- Generate ADA-compliant light and dark themes from a single hex color. colorx.dev",
-  "main": "dist/index.js",
-  "types": "dist/index.d.ts",
+  "private": true,
+  "version": "2.0.0",
+  "description": "Generate WCAG and APCA-compliant light and dark themes from a single hex color.",
   "scripts": {
-    "build": "tsc",
-    "demo": "npx ts-node src/demo.ts"
-  },
-  "devDependencies": {
-    "typescript": "^5.4.0",
-    "ts-node": "^10.9.0"
+    "dev": "pnpm --filter @colorx/web dev",
+    "build": "pnpm --filter @colorx/core build && pnpm --filter @colorx/web build",
+    "test": "pnpm -r test",
+    "lint": "eslint ."
   }
 }

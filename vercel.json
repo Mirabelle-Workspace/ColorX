@@ -1,8 +1,8 @@
 {
-  "buildCommand": null,
-  "outputDirectory": ".",
-  "routes": [
-    { "src": "/generator", "dest": "/generator.html" },
-    { "src": "/(.*)", "dest": "/$1" }
+  "buildCommand": "pnpm --filter @colorx/core build && pnpm --filter @colorx/web build",
+  "outputDirectory": "apps/web/dist",
+  "framework": "vite",
+  "rewrites": [
+    { "source": "/(.*)", "destination": "/index.html" }
   ]
 }
