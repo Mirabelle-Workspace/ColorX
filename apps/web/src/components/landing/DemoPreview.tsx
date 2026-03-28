@@ -1,10 +1,10 @@
 import { useState, useEffect } from "react";
+import { motion, AnimatePresence } from "motion/react";
 import { adjustLightness, mixColors } from "@colorx/core";
-import { Card, CardContent } from "@/components/ui/card";
+import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { Flex, Stack, Grid } from "@/components/layout/primitives";
-import { useReducedMotion } from "@/hooks/useReducedMotion";
+import { Stack } from "@/components/layout/primitives";
+import { usePreferences } from "@/hooks/usePreferences";
 
 const DEMO_COLORS = [
   "#6366f1",
@@ -17,17 +17,59 @@ const DEMO_COLORS = [
   "#84cc16",
 ];
 
+function SwatchRow({ colors, borderClass }: { colors: string[]; borderClass: string }) {
+  return (
+    <motion.div className="flex gap-2">
+      {colors.map((c, i) => (
+        <motion.span
+          key={i}
+          className={`h-10 w-10 rounded-lg border ${borderClass}`}
+          style={{ backgroundColor: c }}
+          initial={{ scale: 0, opacity: 0 }}
+          animate={{ scale: 1, opacity: 1 }}
+          transition={{ delay: i * 0.08, type: "spring", stiffness: 300, damping: 20 }}
+        />
+      ))}
+    </motion.div>
+  );
+}
+
 export function DemoPreview() {
   const [index, setIndex] = useState(0);
-  const reducedMotion = useReducedMotion();
+  const [showDark, setShowDark] = useState(false);
+  const { lowCarbon, motionDisabled } = usePreferences();
 
   useEffect(() => {
-    if (reducedMotion) return;
-    const timer = setInterval(() => {
+    if (motionDisabled) return;
+    const colorTimer = setInterval(() => {
       setIndex((i) => (i + 1) % DEMO_COLORS.length);
     }, 3000);
-    return () => clearInterval(timer);
-  }, [reducedMotion]);
+    return () => clearInterval(colorTimer);
+  }, [motionDisabled]);
+
+  useEffect(() => {
+    if (motionDisabled) return;
+    const modeTimer = setInterval(() => {
+      setShowDark((d) => !d);
+    }, 4500);
+    return () => clearInterval(modeTimer);
+  }, [motionDisabled]);
+
+  if (lowCarbon) {
+    return (
+      <Card
+        role="img"
+        aria-label="Demo preview: generates light and dark color themes from a single hex input"
+        className="flex min-h-[320px] items-center justify-center border-2 border-dashed p-8 text-center text-sm text-muted-foreground"
+      >
+        <Stack gap="sm" className="items-center">
+          <p className="font-semibold">Theme Preview</p>
+          <p>Generates light and dark color palettes from a single hex input with WCAG contrast enforcement.</p>
+          <Badge variant="secondary">Low carbon mode -- visual demo disabled</Badge>
+        </Stack>
+      </Card>
+    );
+  }
 
   const hex = DEMO_COLORS[index];
   const primary = hex;
@@ -37,80 +79,84 @@ export function DemoPreview() {
   const border = adjustLightness(hex, 0.78);
   const borderD = mixColors(hex, "#333333", 0.15);
 
-  const swatches = [primary, surface, adjustLightness(hex, 0.93), border];
-  const swatchesDark = [primaryDark, surfaceD, mixColors(hex, "#242424", 0.12), borderD];
+  const lightSwatches = [primary, surface, adjustLightness(hex, 0.93), border];
+  const darkSwatches = [primaryDark, surfaceD, mixColors(hex, "#242424", 0.12), borderD];
 
   return (
     <Card className="w-full overflow-hidden shadow-xl" aria-hidden="true">
-      <Flex as="header" gap="xs" align="center" className="bg-muted px-4 py-2.5">
+      <header className="flex items-center gap-1.5 bg-muted px-4 py-2.5">
         <span className="h-2.5 w-2.5 rounded-full bg-[#ccc]" />
         <span className="h-2.5 w-2.5 rounded-full bg-[#ccc]" />
         <span className="h-2.5 w-2.5 rounded-full bg-[#ccc]" />
-      </Flex>
-      <CardContent className="p-0">
-        <Grid cols={2} gap="sm" className="gap-0 grid-cols-1 min-[500px]:grid-cols-2">
-          <Stack as="section" gap="sm" className="bg-white p-6">
-            <span className="text-[0.7rem] font-bold uppercase tracking-widest opacity-50">
-              Light
-            </span>
-            <Flex gap="xs">
-              {swatches.map((c, i) => (
-                <span
-                  key={i}
-                  className="h-9 w-9 rounded-lg border border-black/[0.08]"
-                  style={{ backgroundColor: c }}
-                />
-              ))}
-            </Flex>
-            <Button
-              size="sm"
-              className="w-fit"
-              style={{ backgroundColor: primary, color: "#fff" }}
+      </header>
+
+      <AnimatePresence mode="wait">
+        <motion.div
+          key={`${index}-${showDark}`}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          transition={{ duration: 0.6 }}
+        >
+          <motion.section
+            className="flex flex-col gap-4 p-8"
+            animate={{
+              backgroundColor: showDark ? "#121212" : "#ffffff",
+              color: showDark ? "#e8e8e8" : "#1a1a1a",
+            }}
+            transition={{ duration: 0.8, ease: "easeInOut" }}
+          >
+            <motion.span
+              className="text-[0.65rem] font-bold uppercase tracking-[0.15em]"
+              animate={{ opacity: 0.5 }}
+            >
+              {showDark ? "Dark" : "Light"} Theme
+            </motion.span>
+
+            <SwatchRow
+              colors={showDark ? darkSwatches : lightSwatches}
+              borderClass={showDark ? "border-white/[0.08]" : "border-black/[0.08]"}
+            />
+
+            <motion.span
+              className="w-fit rounded-lg px-5 py-2.5 text-sm font-semibold"
+              animate={{
+                backgroundColor: showDark ? primaryDark : primary,
+                color: showDark ? "#000" : "#fff",
+              }}
+              transition={{ duration: 0.8 }}
             >
               Button
-            </Button>
-            <Card
-              className="border p-3"
-              style={{ backgroundColor: surface, borderColor: border }}
+            </motion.span>
+
+            <motion.div
+              className="rounded-lg border p-4"
+              animate={{
+                backgroundColor: showDark ? surfaceD : surface,
+                borderColor: showDark ? borderD : border,
+              }}
+              transition={{ duration: 0.8 }}
             >
-              <span className="text-xs font-semibold">Card Component</span>
-              <Badge variant="secondary" className="mt-1.5 bg-green-100 text-green-800">
+              <p className="mb-2 text-sm font-semibold">Card Component</p>
+              <Badge variant="secondary" className="bg-green-100 text-green-800">
                 AA 4.5:1
               </Badge>
-            </Card>
-          </Stack>
-          <Stack as="section" gap="sm" className="bg-[#121212] p-6 text-[#e8e8e8]">
-            <span className="text-[0.7rem] font-bold uppercase tracking-widest opacity-50">
-              Dark
-            </span>
-            <Flex gap="xs">
-              {swatchesDark.map((c, i) => (
-                <span
-                  key={i}
-                  className="h-9 w-9 rounded-lg border border-white/[0.08]"
-                  style={{ backgroundColor: c }}
-                />
-              ))}
-            </Flex>
-            <Button
-              size="sm"
-              className="w-fit"
-              style={{ backgroundColor: primaryDark, color: "#000" }}
+            </motion.div>
+
+            <motion.div
+              className="flex items-center gap-3 text-xs"
+              initial={{ opacity: 0, y: 8 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.4 }}
             >
-              Button
-            </Button>
-            <Card
-              className="border p-3"
-              style={{ backgroundColor: surfaceD, borderColor: borderD }}
-            >
-              <span className="text-xs font-semibold text-[#e8e8e8]">Card Component</span>
-              <Badge variant="secondary" className="mt-1.5 bg-green-100 text-green-800">
-                AA 4.5:1
+              <span className="font-mono opacity-60">{hex}</span>
+              <Badge variant="outline" className="text-[0.65rem]">
+                {showDark ? "Dark" : "Light"}
               </Badge>
-            </Card>
-          </Stack>
-        </Grid>
-      </CardContent>
+            </motion.div>
+          </motion.section>
+        </motion.div>
+      </AnimatePresence>
     </Card>
   );
 }

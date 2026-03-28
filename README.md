@@ -27,6 +27,9 @@ Side-by-side comparison of original vs simulated themes for each deficiency type
 |-------|------------|
 | Core engine | TypeScript, zero dependencies |
 | Web app | React 19, Vite 6, Tailwind CSS v4 |
+| UI components | shadcn/ui (Radix primitives) |
+| Animation | Motion (formerly Framer Motion) |
+| Icons | Lucide React, React Icons |
 | Monorepo | pnpm workspaces |
 | Testing | Vitest |
 | Deployment | Vercel |
