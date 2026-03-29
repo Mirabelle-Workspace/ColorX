@@ -12,7 +12,7 @@ export function CTABottom() {
             <CardTitle className="text-3xl font-extrabold tracking-tight">
               Ready to build your theme?
             </CardTitle>
-            <CardDescription className="text-muted-foreground">
+            <CardDescription className="text-[#aaa]">
               Pick a color and get accessible light and dark themes in seconds.
             </CardDescription>
           </CardHeader>

@@ -2,6 +2,8 @@
 
 Generate WCAG 2.1 and APCA-compliant light and dark themes from a single hex color. Built for design systems engineers who need accessible color tokens that work out of the box.
 
+**[colorx.dev](https://colorx.dev)**
+
 ## What It Does
 
 Pick one color. ColorX derives 15 design tokens for both light and dark modes -- backgrounds, surfaces, primary, text hierarchy, borders, and semantic colors -- then checks every foreground/background pair against:
@@ -28,42 +30,128 @@ Side-by-side comparison of original vs simulated themes for each deficiency type
 | Core engine | TypeScript, zero dependencies |
 | Web app | React 19, Vite 6, Tailwind CSS v4 |
 | UI components | shadcn/ui (Radix primitives) |
+| Layout system | Custom primitives (Container, Stack, Grid, Flex) |
 | Animation | Motion (formerly Framer Motion) |
 | Icons | Lucide React, React Icons |
 | Monorepo | pnpm workspaces |
 | Testing | Vitest |
 | Deployment | Vercel |
 
+## Features
+
+### Generator
+- Pick a hex color via native color picker or text input
+- Generates 15 design tokens for light and dark modes
+- WCAG 2.1 contrast audit (AA, AAA, AA Large) for every color pair
+- APCA Lc contrast values alongside WCAG ratios
+- Color vision deficiency simulation (deuteranopia, protanopia, tritanopia, achromatopsia)
+- Copy-paste CSS custom properties with `prefers-color-scheme` and `data-theme` support
+- Click any swatch to copy its hex value
+
+### Site-Wide Modes
+
+Three toggles in the navbar, each with `aria-pressed` state:
+
+**Dark Mode** -- toggles light/dark theme for the site itself (independent of generated themes). Respects `prefers-color-scheme` system preference on first visit.
+
+**A11y Mode** -- an accessibility enhancement layer that goes beyond baseline WCAG compliance:
+
+| Feature | How |
+|---------|-----|
+| Enhanced contrast | Overrides CSS custom properties to true black/white foregrounds |
+| Larger text | Bumps root font-size to 112.5% (18px base) |
+| No motion | CSS kills native transitions; Motion disabled via `MotionConfig reducedMotion="always"` |
+| Stronger focus rings | 3px solid outline with 4px offset on `:focus-visible` |
+| Visible links | Underlines all links so they are not identified by color alone |
+
+**Low Carbon Mode** -- sustainability-focused mode that strips the page down to content only:
+
+| Feature | How |
+|---------|-----|
+| No images | `LowCarbonImage` component renders dashed-border alt-text placeholder instead of loading images |
+| System fonts | CSS override to `system-ui` stack, eliminating web font downloads |
+| No motion | CSS kills transitions; Motion disabled via `MotionConfig reducedMotion="always"` |
+| No decorative effects | CSS strips `box-shadow`, `text-shadow`, `backdrop-filter` |
+| Simplified cards | Card backgrounds set to transparent with border-only styling |
+
+Both modes can be active simultaneously. The CSS rules and React logic compose cleanly.
+
+**How preferences work:**
+- `useSyncExternalStore` hook manages state outside React so CSS classes apply before first paint
+- Toggling flips `.dark`, `.a11y`, or `.low-carbon` class on `<html>`
+- All preferences persist to `localStorage`
+- Motion animations disabled at the app level via `MotionConfig` wrapper in `App.tsx`
+
+### Animation
+
+Motion (formerly Framer Motion) powers all animations, integrated with both Tailwind CSS and shadcn/ui (Radix):
+
+- **Scroll-triggered entrance** -- sections fade and slide in with spring physics on viewport entry
+- **Demo preview** -- color swatches spring-scale with stagger, background morphs between light/dark, all colors animate between palettes
+- **Card hover** -- spring lift (`y: -4`) on feature and step cards
+- **Swatch interaction** -- spring scale on hover/tap
+- **Tab transitions** -- `AnimatePresence` with spring slide between light/dark theme panels
+- **Step numbers** -- scale + rotate on hover
+- **Tailwind spring easings** -- `ease-spring-snappy`, `ease-spring`, `ease-spring-soft` available as CSS utility classes via `@theme`
+
+All animations respect user preferences: disabled when a11y mode, low carbon mode, or `prefers-reduced-motion: reduce` is active.
+
+### Accessibility (Baseline)
+
+Built into the site regardless of a11y mode:
+
+- Skip-to-content link
+- WAI-ARIA Tabs with keyboard navigation (arrow keys, Home, End)
+- Screen reader announcements via `aria-live` regions for theme generation and clipboard events
+- Focus management on route transitions
+- `prefers-reduced-motion` media query support
+- Semantic HTML: `<table>` with `<caption>`, `<fieldset>`/`<legend>`, `<nav>`, `<section>`, `<article>`, `<ol>`/`<ul>`
+- All interactive swatches are `<button>` elements with descriptive `aria-label`
+
 ## Project Structure
 
 ```
 colorx/
   packages/
-    core/          # Standalone TS library (@colorx/core)
+    core/                # Standalone TS library (@colorx/core)
       src/
         types.ts         # ThemeColors, ContrastResult, ThemeOutput, APCAResult, CVDType
         color-math.ts    # Color conversion: hex, RGB, HSL
         contrast.ts      # WCAG 2.1 contrast ratio + enforcement
-        apca.ts          # APCA Lc contrast algorithm
-        cvd.ts           # Color vision deficiency simulation
+        apca.ts          # APCA Lc contrast algorithm (WCAG 3.0 draft)
+        cvd.ts           # Color vision deficiency simulation (Brettel/Vienot matrices)
         theme.ts         # Light/dark theme generation + audit
         css.ts           # CSS custom properties output
         index.ts         # Barrel export
-      tests/
+      tests/             # 42 tests across 5 suites
   apps/
-    web/           # React SPA (@colorx/web)
+    web/                 # React SPA (@colorx/web)
       src/
         components/
+          ui/            # shadcn/ui (Button, Card, Badge, Tabs, Table, Separator)
           layout/        # RootLayout, Nav, Footer, SkipLink
+            primitives/  # Container, Stack, Grid, Flex
           color-input/   # ColorPicker, ColorForm
-          theme-display/ # ThemeTabs, SwatchGrid, UIPreview
-          contrast/      # ContrastAudit (WCAG + APCA)
+          theme-display/ # ThemeTabs, SwatchGrid, Swatch, UIPreview
+          contrast/      # ContrastAudit, ContrastBadge, APCABadge
           cvd/           # CVDSimulation, CVDPreview
           output/        # CSSOutput, CopyButton
-          landing/       # Hero, HowItWorks, Features
-        hooks/           # useTheme, useAPCA, useCVD, useCopyToClipboard, useReducedMotion
-        context/         # ThemeContext, AnnounceContext
-        pages/           # LandingPage, GeneratorPage
+          landing/       # Hero, DemoPreview, HowItWorks, Features, WCAGExplainer, TokenReference, CTABottom
+          common/        # AnimateIn, LowCarbonImage, VisuallyHidden
+        hooks/
+          usePreferences.ts     # Dark/a11y/low-carbon state (useSyncExternalStore)
+          useTheme.ts           # ThemeContext consumer
+          useAPCA.ts            # APCA audit for theme pairs
+          useCVD.ts             # CVD simulation for themes
+          useCopyToClipboard.ts # Clipboard API + SR announcement
+          useReducedMotion.ts   # prefers-reduced-motion
+          useAnnounce.ts        # aria-live announcements
+        context/
+          ThemeContext.tsx       # Hex input + generated ThemeOutput
+          AnnounceContext.tsx    # Screen reader announcement provider
+        pages/
+          LandingPage.tsx
+          GeneratorPage.tsx
 ```
 
 ## Getting Started
@@ -126,28 +214,18 @@ const simulated = simulateThemeCVD(output.light, "deuteranopia");
 | `error` | Destructive/error states |
 | `info` | Informational highlights |
 
-## Accessibility
-
-The tool itself is built with accessibility as a first-class concern:
-
-- **Skip link** to jump past navigation
-- **WAI-ARIA Tabs** with keyboard navigation (arrow keys, Home, End) for theme modes and CVD types
-- **Screen reader announcements** via `aria-live` regions for theme generation and clipboard events
-- **Focus management** on route transitions
-- **Reduced motion** support via `prefers-reduced-motion` media query
-- **Semantic HTML** throughout: `<table>` with `<caption>` for audit data, `<fieldset>`/`<legend>` for forms
-- All interactive swatches are `<button>` elements with descriptive `aria-label`
-
 ---
 
 ## Roadmap
 
 ### v1 -- React Web App (current)
 
-- React + TypeScript + Vite + Tailwind CSS v4
-- WCAG 2.1 AA/AAA contrast audit
-- APCA (WCAG 3.0 draft) contrast alongside WCAG 2.1
+- React 19 + TypeScript + Vite 6 + Tailwind CSS v4
+- shadcn/ui component library + custom layout primitives
+- Motion scroll and interaction animations with spring physics
+- WCAG 2.1 AA/AAA contrast audit + APCA Lc values
 - Color vision deficiency simulation (4 types)
+- Dark mode, A11y mode, Low Carbon mode
 - Fully accessible: keyboard navigation, screen reader support, reduced motion
 - 15 design tokens per theme, ready-to-use CSS variables
 

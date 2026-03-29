@@ -6,10 +6,10 @@ interface APCABadgeProps {
 }
 
 const LEVEL_STYLES = {
-  body: "bg-green-100 text-green-800",
-  heading: "bg-green-100 text-green-800",
-  "non-text": "bg-yellow-100 text-yellow-800",
-  fail: "bg-red-100 text-red-800",
+  body: "bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400",
+  heading: "bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400",
+  "non-text": "bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400",
+  fail: "bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400",
 };
 
 const LEVEL_LABELS = {
