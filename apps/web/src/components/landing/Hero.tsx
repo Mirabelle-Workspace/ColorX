@@ -22,7 +22,7 @@ export function Hero() {
               ratio checked against WCAG 2.1 and APCA standards. Ready-to-use CSS
               variables in seconds.
             </p>
-            <Button size="lg" className="w-fit px-8 py-3 text-base" onClick={() => navigate("/generator")}>
+            <Button size="lg" className="w-fit" onClick={() => navigate("/generator")}>
               Launch the Generator
             </Button>
           </Stack>

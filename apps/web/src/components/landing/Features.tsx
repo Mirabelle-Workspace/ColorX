@@ -1,7 +1,7 @@
 import type { ReactNode } from "react";
 import { motion } from "motion/react";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
-import { Container, Grid, Stack } from "@/components/layout/primitives";
+import { Container, Flex, Grid, Stack } from "@/components/layout/primitives";
 import { AnimateIn } from "@/components/common/AnimateIn";
 import { ScanEye, Code, Palette, Eye } from "lucide-react";
 
@@ -47,9 +47,8 @@ export function Features() {
             <h2 className="text-3xl font-extrabold tracking-tight">
               What You Get
             </h2>
-            <p className="max-w-xl text-muted-foreground">
-              Everything you need to go from a single hex code to a production-ready
-              color system.
+            <p className="text-muted-foreground">
+              Everything you need to go from a single hex code to a production-ready color system.
             </p>
           </Stack>
         </AnimateIn>
@@ -62,10 +61,12 @@ export function Features() {
               >
                 <Card>
                   <CardHeader>
-                    <span className="mb-1 flex h-10 w-10 items-center justify-center rounded-lg bg-muted text-muted-foreground">
-                      {feature.icon}
-                    </span>
-                    <CardTitle>{feature.title}</CardTitle>
+                    <Flex align="center" gap="sm">
+                      <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-muted text-muted-foreground">
+                        {feature.icon}
+                      </span>
+                      <CardTitle>{feature.title}</CardTitle>
+                    </Flex>
                   </CardHeader>
                   <CardContent>
                     <p className="text-sm leading-relaxed text-muted-foreground">

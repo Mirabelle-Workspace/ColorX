@@ -5,6 +5,7 @@ import { LandingPage } from "@/pages/LandingPage";
 import { GeneratorPage } from "@/pages/GeneratorPage";
 import { NotFoundPage } from "@/pages/NotFoundPage";
 import { ErrorBoundary } from "@/components/common/ErrorBoundary";
+import { TooltipProvider } from "@/components/ui/tooltip";
 import { AnnounceProvider } from "@/context/AnnounceContext";
 import { ThemeProvider } from "@/context/ThemeContext";
 import { usePreferences } from "@/hooks/usePreferences";
@@ -28,11 +29,13 @@ function AppRoutes() {
 export function App() {
   return (
     <ErrorBoundary>
-      <AnnounceProvider>
-        <ThemeProvider>
-          <AppRoutes />
-        </ThemeProvider>
-      </AnnounceProvider>
+      <TooltipProvider>
+        <AnnounceProvider>
+          <ThemeProvider>
+            <AppRoutes />
+          </ThemeProvider>
+        </AnnounceProvider>
+      </TooltipProvider>
     </ErrorBoundary>
   );
 }
