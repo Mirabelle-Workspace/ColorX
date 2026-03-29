@@ -1,9 +1,11 @@
-import { Link } from "react-router";
-import { buttonVariants } from "@/components/ui/button";
+import { useNavigate } from "react-router";
+import { Button } from "@/components/ui/button";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
 import { AnimateIn } from "@/components/common/AnimateIn";
 
 export function CTABottom() {
+  const navigate = useNavigate();
+
   return (
     <section className="mx-auto max-w-6xl px-6 py-16">
       <AnimateIn>
@@ -17,9 +19,9 @@ export function CTABottom() {
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <Link to="/generator" className={buttonVariants({ size: "lg", variant: "secondary" })}>
+            <Button size="lg" variant="secondary" onClick={() => navigate("/generator")}>
               Open the Generator
-            </Link>
+            </Button>
           </CardContent>
         </Card>
       </AnimateIn>

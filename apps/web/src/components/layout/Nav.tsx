@@ -1,12 +1,12 @@
-import { Link, useLocation } from "react-router";
+import { Link, useLocation, useNavigate } from "react-router";
 import { Moon, Sun, Accessibility, Leaf } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { buttonVariants } from "@/components/ui/button";
 import { Flex } from "@/components/layout/primitives";
 import { usePreferences } from "@/hooks/usePreferences";
 
 export function Nav() {
   const location = useLocation();
+  const navigate = useNavigate();
   const isGenerator = location.pathname === "/generator";
   const { dark, a11y, lowCarbon, toggleDark, toggleA11y, toggleLowCarbon } = usePreferences();
 
@@ -54,13 +54,13 @@ export function Nav() {
         </Button>
 
         {isGenerator ? (
-          <Link to="/" className={buttonVariants({ variant: "secondary", size: "sm" })}>
+          <Button variant="secondary" size="default" onClick={() => navigate("/")}>
             How It Works
-          </Link>
+          </Button>
         ) : (
-          <Link to="/generator" className={buttonVariants({ size: "sm" })}>
+          <Button size="default" onClick={() => navigate("/generator")}>
             Open Generator
-          </Link>
+          </Button>
         )}
       </Flex>
     </Flex>

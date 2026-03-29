@@ -41,6 +41,7 @@ export interface APCAResult {
   level: "body" | "heading" | "non-text" | "fail";
 }
 
+// Color Vision Deficiency (CVD) -- the technical term for color blindness
 export type CVDType =
   | "deuteranopia"
   | "protanopia"
