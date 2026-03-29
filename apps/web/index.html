@@ -3,9 +3,72 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content="Generate WCAG and APCA-compliant light and dark themes from a single hex color." />
-    <title>ColorX -- Accessible Themes in Seconds</title>
+
+    <!-- SEO -->
+    <title>ColorX -- Accessible Theme Generator by Mirabelle Doiron</title>
+    <meta name="description" content="Generate WCAG 2.1 and APCA-compliant light and dark color themes from a single hex color. 15 design tokens, contrast audit, CVD simulation, and ready-to-use CSS variables." />
+    <meta name="keywords" content="color theme generator, WCAG contrast, APCA, design tokens, accessibility, color blindness simulation, CSS variables, design systems" />
+    <meta name="author" content="Mirabelle Doiron" />
+    <link rel="canonical" href="https://colorx.dev" />
+    <meta name="robots" content="index, follow" />
+    <meta name="theme-color" content="#1a1a1a" />
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="ColorX -- Accessible Theme Generator by Mirabelle Doiron" />
+    <meta property="og:description" content="Pick one color. Get WCAG and APCA-compliant light and dark themes with 15 design tokens, contrast audit, and color vision deficiency simulation." />
+    <meta property="og:url" content="https://colorx.dev" />
+    <meta property="og:site_name" content="ColorX" />
+    <meta property="og:locale" content="en_US" />
+    <meta property="og:image" content="https://colorx.dev/og-image.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="ColorX -- Accessible Theme Generator by Mirabelle Doiron" />
+    <meta name="twitter:description" content="Pick one color. Get WCAG and APCA-compliant light and dark themes with contrast audit and color vision simulation." />
+    <meta name="twitter:image" content="https://colorx.dev/og-image.png" />
+
+    <!-- Favicon + Manifest -->
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="manifest" href="/site.webmanifest" />
+
+    <!-- Preload critical font -->
+    <link rel="preload" href="/assets/geist-latin-wght-normal-Dm3htQBi.woff2" as="font" type="font/woff2" crossorigin />
+
+    <!-- Structured Data -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebApplication",
+      "name": "ColorX",
+      "url": "https://colorx.dev",
+      "description": "Generate WCAG 2.1 and APCA-compliant light and dark color themes from a single hex color.",
+      "applicationCategory": "DesignApplication",
+      "operatingSystem": "Any",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD"
+      },
+      "author": {
+        "@type": "Person",
+        "name": "Mirabelle Doiron",
+        "url": "https://www.mirabelledoiron.com/"
+      },
+      "featureList": [
+        "WCAG 2.1 AA/AAA contrast audit",
+        "APCA Lc contrast analysis",
+        "Color vision deficiency simulation",
+        "15 design tokens per theme",
+        "CSS custom properties output",
+        "Light and dark theme generation",
+        "Accessibility mode",
+        "Low carbon mode"
+      ]
+    }
+    </script>
   </head>
   <body>
     <div id="root"></div>

@@ -1,0 +1,16 @@
+{
+  "name": "ColorX",
+  "short_name": "ColorX",
+  "description": "Generate accessible color themes from a single hex color",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#1a1a1a",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
+    }
+  ]
+}

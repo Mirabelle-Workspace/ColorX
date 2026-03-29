@@ -39,20 +39,18 @@ export function WCAGExplainer() {
       </AnimateIn>
       <Grid as="ul" cols={3} gap="md">
         {LEVELS.map((item, i) => (
-          <AnimateIn key={item.level} delay={i * 0.1}>
-            <li>
-              <Card className="text-left">
-                <CardHeader className="text-center">
-                  <CardTitle className="text-2xl">{item.level}</CardTitle>
-                  <CardDescription className="font-mono">{item.ratio}</CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-sm leading-relaxed text-muted-foreground">
-                    {item.description}
-                  </p>
-                </CardContent>
-              </Card>
-            </li>
+          <AnimateIn as="li" key={item.level} delay={i * 0.1}>
+            <Card className="text-left">
+              <CardHeader className="text-center">
+                <CardTitle className="text-2xl">{item.level}</CardTitle>
+                <CardDescription className="font-mono">{item.ratio}</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <p className="text-sm leading-relaxed text-muted-foreground">
+                  {item.description}
+                </p>
+              </CardContent>
+            </Card>
           </AnimateIn>
         ))}
       </Grid>

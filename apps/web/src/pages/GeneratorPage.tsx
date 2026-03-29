@@ -4,8 +4,10 @@ import { CVDSimulation } from "@/components/cvd/CVDSimulation";
 import { CSSOutput } from "@/components/output/CSSOutput";
 import { Container, Stack } from "@/components/layout/primitives";
 import { useThemeContext } from "@/hooks/useTheme";
+import { useDocumentTitle } from "@/hooks/useDocumentTitle";
 
 export function GeneratorPage() {
+  useDocumentTitle("Generator -- ColorX");
   const { theme } = useThemeContext();
 
   return (

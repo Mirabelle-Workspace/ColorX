@@ -214,6 +214,47 @@ const simulated = simulateThemeCVD(output.light, "deuteranopia");
 | `error` | Destructive/error states |
 | `info` | Informational highlights |
 
+## Lighthouse Scores
+
+| Page | Performance | Accessibility | Best Practices | SEO |
+|------|-------------|---------------|----------------|-----|
+| Landing | 98 | 96 | 100 | 100 |
+| Generator | 98 | 95 | 100 | 100 |
+
+## SEO
+
+### Checklist
+
+| Item | Status |
+|------|--------|
+| `<title>` with project name + author | Done |
+| `<meta name="description">` unique per page, under 160 chars | Done |
+| `<link rel="canonical">` | Done |
+| `<meta name="robots" content="index, follow">` | Done |
+| Open Graph tags (og:title, og:description, og:image, og:url) | Done |
+| Twitter Card tags (twitter:card, twitter:title, twitter:description, twitter:image) | Done |
+| OG image (1200x630) | Done |
+| `<html lang="en">` | Done |
+| Favicon (SVG) | Done |
+| `robots.txt` with sitemap reference | Done |
+| `sitemap.xml` with all public URLs and dates | Done |
+| Structured data (JSON-LD `@type: WebApplication`) | Done |
+| `<meta name="author">` | Done |
+| Web manifest (`site.webmanifest`) | Done |
+| Preloaded critical font | Done |
+| Semantic HTML (`<main>`, `<nav>`, `<section>`, `<article>`, `<ol>`, `<ul>`) | Done |
+| All images have alt text | Done (LowCarbonImage enforces alt) |
+| Page loads under 3s on 3G | Done (Performance 98) |
+
+### Files
+
+- `apps/web/index.html` -- meta tags, Open Graph, Twitter Card, JSON-LD structured data, font preload
+- `apps/web/public/robots.txt` -- crawl rules + sitemap reference
+- `apps/web/public/sitemap.xml` -- all public URLs with lastmod dates
+- `apps/web/public/site.webmanifest` -- PWA manifest
+- `apps/web/public/favicon.svg` -- vector favicon
+- `apps/web/src/hooks/useDocumentTitle.ts` -- per-page title updates
+
 ---
 
 ## Roadmap

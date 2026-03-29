@@ -55,8 +55,8 @@ export function Features() {
         </AnimateIn>
         <Grid as="ul" cols={2} gap="md">
           {FEATURES.map((feature, i) => (
-            <AnimateIn key={feature.title} delay={i * 0.1}>
-              <motion.li
+            <AnimateIn as="li" key={feature.title} delay={i * 0.1}>
+              <motion.div
                 whileHover={{ y: -4 }}
                 transition={{ type: "spring", stiffness: 300, damping: 25 }}
               >
@@ -73,7 +73,7 @@ export function Features() {
                     </p>
                   </CardContent>
                 </Card>
-              </motion.li>
+              </motion.div>
             </AnimateIn>
           ))}
         </Grid>

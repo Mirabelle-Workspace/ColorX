@@ -39,8 +39,8 @@ export function HowItWorks() {
       </AnimateIn>
       <Grid as="ol" cols={3} gap="lg">
         {STEPS.map((step, i) => (
-          <AnimateIn key={step.number} delay={i * 0.1}>
-            <motion.li
+          <AnimateIn as="li" key={step.number} delay={i * 0.1}>
+            <motion.div
               whileHover={{ y: -4 }}
               transition={{ type: "spring", stiffness: 300, damping: 25 }}
             >
@@ -61,7 +61,7 @@ export function HowItWorks() {
                   </p>
                 </CardContent>
               </Card>
-            </motion.li>
+            </motion.div>
           </AnimateIn>
         ))}
       </Grid>

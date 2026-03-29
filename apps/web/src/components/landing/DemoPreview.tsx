@@ -108,7 +108,7 @@ export function DemoPreview() {
           >
             <motion.span
               className="text-[0.65rem] font-bold uppercase tracking-[0.15em]"
-              animate={{ opacity: 0.5 }}
+              animate={{ opacity: 0.7 }}
             >
               {showDark ? "Dark" : "Light"} Theme
             </motion.span>

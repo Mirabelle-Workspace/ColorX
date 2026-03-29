@@ -1,8 +1,9 @@
 import { motion } from "motion/react";
-import type { ReactNode } from "react";
+import type { ReactNode, ElementType } from "react";
 
 interface AnimateInProps {
   children: ReactNode;
+  as?: ElementType;
   className?: string;
   delay?: number;
   direction?: "up" | "down" | "left" | "right" | "none";
@@ -18,12 +19,15 @@ const OFFSETS = {
 
 export function AnimateIn({
   children,
+  as = "div",
   className,
   delay = 0,
   direction = "up",
 }: AnimateInProps) {
+  const Tag = motion.create(as);
+
   return (
-    <motion.div
+    <Tag
       initial={OFFSETS[direction]}
       whileInView={{ opacity: 1, x: 0, y: 0 }}
       viewport={{ once: true, margin: "-80px" }}
@@ -36,6 +40,6 @@ export function AnimateIn({
       className={className}
     >
       {children}
-    </motion.div>
+    </Tag>
   );
 }
