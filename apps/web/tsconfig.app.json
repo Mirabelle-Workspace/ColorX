@@ -20,5 +20,6 @@
       "@colorx/core": ["../../packages/core/src/index.ts"]
     }
   },
-  "include": ["src"]
+  "include": ["src"],
+  "exclude": ["src/**/__tests__/**", "src/**/*.test.*", "src/**/*.spec.*", "src/test/**"]
 }
