@@ -1,5 +1,4 @@
-import { Globe } from "lucide-react";
-import { FaGithub, FaLinkedinIn } from "react-icons/fa6";
+import { Globe, ExternalLink } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Flex } from "@/components/layout/primitives";
 
@@ -18,23 +17,25 @@ export function Footer() {
             onClick={() => window.open("https://www.mirabelledoiron.com/", "_blank", "noopener,noreferrer")}
             aria-label="Portfolio (opens in new tab)"
           >
-            <Globe className="size-5" />
+            <Globe className="size-5" aria-hidden="true" />
           </Button>
           <Button
             variant="ghost"
-            size="icon"
+            size="sm"
             onClick={() => window.open("https://github.com/mirabelledoiron", "_blank", "noopener,noreferrer")}
             aria-label="GitHub (opens in new tab)"
           >
-            <FaGithub className="size-5" />
+            <span>GitHub</span>
+            <ExternalLink className="ml-1 size-4" aria-hidden="true" />
           </Button>
           <Button
             variant="ghost"
-            size="icon"
+            size="sm"
             onClick={() => window.open("https://www.linkedin.com/in/mirabelledoiron", "_blank", "noopener,noreferrer")}
             aria-label="LinkedIn (opens in new tab)"
           >
-            <FaLinkedinIn className="size-5" />
+            <span>LinkedIn</span>
+            <ExternalLink className="ml-1 size-4" aria-hidden="true" />
           </Button>
         </Flex>
       </Flex>
