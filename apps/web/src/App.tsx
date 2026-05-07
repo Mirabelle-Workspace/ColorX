@@ -3,6 +3,7 @@ import { MotionConfig } from "motion/react";
 import { RootLayout } from "@/components/layout/RootLayout";
 import { LandingPage } from "@/pages/LandingPage";
 import { GeneratorPage } from "@/pages/GeneratorPage";
+import { UploadPage } from "@/pages/UploadPage";
 import { NotFoundPage } from "@/pages/NotFoundPage";
 import { ErrorBoundary } from "@/components/common/ErrorBoundary";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -19,6 +20,7 @@ function AppRoutes() {
         <Route element={<RootLayout />}>
           <Route index element={<LandingPage />} />
           <Route path="generator" element={<GeneratorPage />} />
+          <Route path="upload" element={<UploadPage />} />
           <Route path="*" element={<NotFoundPage />} />
         </Route>
       </Routes>

@@ -1,6 +1,7 @@
 import { useNavigate } from "react-router";
+import { Upload } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Grid, Stack } from "@/components/layout/primitives";
+import { Flex, Grid, Stack } from "@/components/layout/primitives";
 import { AnimateIn } from "@/components/common/AnimateIn";
 import { DemoPreview } from "./DemoPreview";
 
@@ -22,9 +23,19 @@ export function Hero() {
               ratio checked against WCAG 2.1 and APCA standards. Ready-to-use CSS
               variables in seconds.
             </p>
-            <Button size="lg" className="w-fit" onClick={() => navigate("/generator")}>
-              Launch the Generator
-            </Button>
+            <Flex gap="sm" wrap>
+              <Button size="lg" onClick={() => navigate("/generator")}>
+                Launch the Generator
+              </Button>
+              <Button
+                size="lg"
+                variant="outline"
+                onClick={() => navigate("/upload")}
+              >
+                <Upload className="mr-2 size-4" aria-hidden="true" />
+                Upload a Light Theme
+              </Button>
+            </Flex>
           </Stack>
         </AnimateIn>
         <AnimateIn direction="right" delay={0.2}>

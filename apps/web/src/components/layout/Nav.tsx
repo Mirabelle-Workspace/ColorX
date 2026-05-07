@@ -1,5 +1,5 @@
 import { Link } from "react-router";
-import { Moon, Sun, Accessibility, Leaf } from "lucide-react";
+import { Moon, Sun, Accessibility, Leaf, Upload } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Tooltip, TooltipTrigger, TooltipContent } from "@/components/ui/tooltip";
 import { Flex } from "@/components/layout/primitives";
@@ -16,9 +16,19 @@ export function Nav() {
       aria-label="Main navigation"
       className="mx-auto max-w-6xl px-6 py-5"
     >
-      <Link to="/" className="text-lg font-bold tracking-tight">
-        ColorX
-      </Link>
+      <Flex align="center" gap="md">
+        <Link to="/" className="text-lg font-bold tracking-tight">
+          ColorX
+        </Link>
+        <Link
+          to="/upload"
+          className="inline-flex items-center gap-1.5 rounded-md border border-border px-3 py-1.5 text-sm font-medium text-foreground transition-colors hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+          aria-label="Upload a light theme to convert to dark"
+        >
+          <Upload className="size-3.5" aria-hidden="true" />
+          Upload Theme
+        </Link>
+      </Flex>
 
       <Flex align="center" gap="xs">
         <Tooltip>
