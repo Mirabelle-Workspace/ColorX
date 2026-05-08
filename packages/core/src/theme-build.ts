@@ -3,8 +3,9 @@ import type {
   ExtractedToken,
   BuildResult,
   BuildRecommendation,
+  ThemeMode,
 } from "./types";
-import { generateLightTheme } from "./theme";
+import { generateLightTheme, generateDarkTheme } from "./theme";
 import { hexToRgb, rgbToHsl } from "./color-math";
 import { relativeLuminance } from "./contrast";
 
@@ -90,8 +91,26 @@ function pickByLuminance(
   return null;
 }
 
-export function buildLightThemeFromTokens(
-  tokens: ExtractedToken[]
+function detectMode(slots: Partial<Record<keyof ThemeColors, string>>, usable: UsableToken[]): ThemeMode {
+  // Prefer a mapped background; fall back to the lightest extracted color.
+  const bg =
+    slots.background ??
+    usable
+      .map((t) => ({ hex: t.hex, lum: relativeLuminance(hexToRgb(t.hex)) }))
+      .sort((a, b) => b.lum - a.lum)[0]?.hex;
+  if (!bg) return "light";
+  return relativeLuminance(hexToRgb(bg)) < 0.4 ? "dark" : "light";
+}
+
+export interface BuildOptions {
+  // Force the input mode instead of auto-detecting (used when the user
+  // overrides the heuristic via a UI toggle).
+  forceMode?: ThemeMode;
+}
+
+export function buildThemeFromTokens(
+  tokens: ExtractedToken[],
+  options: BuildOptions = {}
 ): BuildResult {
   const recommendations: BuildRecommendation[] = [];
 
@@ -141,8 +160,18 @@ export function buildLightThemeFromTokens(
     }
   }
 
+  // Pre-detect the mode so heuristics can pick the correct extreme:
+  // a light theme's background is the lightest color, a dark theme's
+  // background is the darkest.
+  const detectedMode = options.forceMode ?? detectMode(slots, usable);
+
   if (!slots.background) {
-    const guess = pickByLuminance(usable, matched, (lum) => lum > 0.85);
+    const wantLight = detectedMode === "light";
+    const guess = pickByLuminance(
+      usable,
+      matched,
+      wantLight ? (lum) => lum > 0.85 : (lum) => lum < 0.15
+    );
     if (guess) {
       slots.background = guess.hex;
       matched.add(guess.rawName);
@@ -150,13 +179,18 @@ export function buildLightThemeFromTokens(
         kind: "heuristic",
         userName: guess.rawName,
         slot: "background",
-        reason: "lightest color",
+        reason: wantLight ? "lightest color" : "darkest color",
       });
     }
   }
 
   if (!slots.text) {
-    const guess = pickByLuminance(usable, matched, (lum) => lum < 0.15);
+    const wantLight = detectedMode === "light";
+    const guess = pickByLuminance(
+      usable,
+      matched,
+      wantLight ? (lum) => lum < 0.15 : (lum) => lum > 0.85
+    );
     if (guess) {
       slots.text = guess.hex;
       matched.add(guess.rawName);
@@ -164,7 +198,7 @@ export function buildLightThemeFromTokens(
         kind: "heuristic",
         userName: guess.rawName,
         slot: "text",
-        reason: "darkest color",
+        reason: wantLight ? "darkest color" : "lightest color",
       });
     }
   }
@@ -184,7 +218,10 @@ export function buildLightThemeFromTokens(
 
   // Synthesize a complete theme from the (chosen) primary, then layer the
   // user's actual mapped values on top so we keep their brand intent.
-  const synth = generateLightTheme(seedPrimary);
+  const synth =
+    detectedMode === "dark"
+      ? generateDarkTheme(seedPrimary)
+      : generateLightTheme(seedPrimary);
   const theme: ThemeColors = { ...synth };
   for (const slot of REQUIRED_KEYS) {
     if (slots[slot]) {
@@ -214,8 +251,13 @@ export function buildLightThemeFromTokens(
   return {
     ok: true,
     theme,
+    mode: detectedMode,
+    detectedMode,
     recommendations,
     mapped: mappedCount,
     synthesized: synthesizedCount,
   };
 }
+
+// Backwards-compat alias for callers expecting the original name.
+export const buildLightThemeFromTokens = buildThemeFromTokens;

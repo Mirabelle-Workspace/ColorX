@@ -1,8 +1,12 @@
 import { describe, it, expect } from "vitest";
 import { extractTokens } from "../src/token-extract";
-import { buildLightThemeFromTokens } from "../src/theme-build";
+import {
+  buildLightThemeFromTokens,
+  buildThemeFromTokens,
+} from "../src/theme-build";
 import { auditTheme } from "../src/theme";
 import { generateDarkVariants } from "../src/dark-variants";
+import { generateLightVariants } from "../src/light-variants";
 
 const HEX_RE = /^#[0-9a-f]{6}$/;
 
@@ -139,6 +143,63 @@ describe("buildLightThemeFromTokens", () => {
         // Same AA guarantee should hold.
         expect(variant.contrast["text / background"].aa).toBe(true);
         expect(variant.contrast["primary / background"].aa).toBe(true);
+      }
+    }
+  });
+});
+
+describe("buildThemeFromTokens — direction detection", () => {
+  it("detects a light theme when the background is light", () => {
+    const result = buildThemeFromTokens([
+      { rawName: "background", rawValue: "#ffffff", hex: "#ffffff" },
+      { rawName: "primary", rawValue: "#6366f1", hex: "#6366f1" },
+      { rawName: "text", rawValue: "#1a1a1a", hex: "#1a1a1a" },
+    ]);
+    expect(result.ok).toBe(true);
+    if (result.ok) expect(result.detectedMode).toBe("light");
+  });
+
+  it("detects a dark theme when the background is dark", () => {
+    const result = buildThemeFromTokens([
+      { rawName: "background", rawValue: "#121212", hex: "#121212" },
+      { rawName: "primary", rawValue: "#a78bfa", hex: "#a78bfa" },
+      { rawName: "text", rawValue: "#e8e8e8", hex: "#e8e8e8" },
+    ]);
+    expect(result.ok).toBe(true);
+    if (result.ok) expect(result.detectedMode).toBe("dark");
+  });
+
+  it("respects forceMode override", () => {
+    const result = buildThemeFromTokens(
+      [
+        { rawName: "background", rawValue: "#ffffff", hex: "#ffffff" },
+        { rawName: "primary", rawValue: "#6366f1", hex: "#6366f1" },
+      ],
+      { forceMode: "dark" }
+    );
+    expect(result.ok).toBe(true);
+    if (result.ok) {
+      expect(result.detectedMode).toBe("dark");
+      // The synthesized theme should be dark-flavored: text light, bg dark.
+      // Background is taken from input ("background" alias) so it stays
+      // light. But synthesized slots come from generateDarkTheme output.
+      // We assert the mode flag, not the layered values.
+    }
+  });
+
+  it("a dark theme upload produces light variants via generateLightVariants", () => {
+    const built = buildThemeFromTokens([
+      { rawName: "background", rawValue: "#121212", hex: "#121212" },
+      { rawName: "primary", rawValue: "#a78bfa", hex: "#a78bfa" },
+    ]);
+    expect(built.ok).toBe(true);
+    if (built.ok) {
+      expect(built.detectedMode).toBe("dark");
+      const variants = generateLightVariants(built.theme);
+      expect(variants).toHaveLength(3);
+      for (const v of variants) {
+        expect(v.contrast["text / background"].aa).toBe(true);
+        expect(v.contrast["primary / background"].aa).toBe(true);
       }
     }
   });

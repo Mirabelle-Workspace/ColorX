@@ -61,6 +61,18 @@ export interface DarkVariant {
   contrast: Record<string, ContrastResult>;
 }
 
+export type LightVariantId = "standard" | "soft" | "warm";
+
+export interface LightVariant {
+  id: LightVariantId;
+  name: string;
+  description: string;
+  colors: ThemeColors;
+  contrast: Record<string, ContrastResult>;
+}
+
+export type ThemeMode = "light" | "dark";
+
 export type ParseFormat = "json" | "js" | "ts" | "css";
 
 export type ParseResult =
@@ -89,6 +101,8 @@ export type BuildResult =
   | {
       ok: true;
       theme: ThemeColors;
+      mode: ThemeMode;
+      detectedMode: ThemeMode;
       recommendations: BuildRecommendation[];
       mapped: number;
       synthesized: number;

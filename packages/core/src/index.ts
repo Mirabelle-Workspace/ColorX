@@ -8,6 +8,9 @@ export type {
   HSL,
   DarkVariantId,
   DarkVariant,
+  LightVariantId,
+  LightVariant,
+  ThemeMode,
   ParseFormat,
   ParseResult,
   ExtractedToken,
@@ -24,5 +27,6 @@ export { generateLightTheme, generateDarkTheme, auditTheme } from "./theme";
 export { generateTheme, themeToCssVars } from "./css";
 export { parseLightTheme, REQUIRED_THEME_KEYS, colorValueToHex } from "./parse-theme";
 export { extractTokens } from "./token-extract";
-export { buildLightThemeFromTokens } from "./theme-build";
+export { buildLightThemeFromTokens, buildThemeFromTokens } from "./theme-build";
 export { generateDarkVariants, variantToCss } from "./dark-variants";
+export { generateLightVariants, lightVariantToCss } from "./light-variants";
