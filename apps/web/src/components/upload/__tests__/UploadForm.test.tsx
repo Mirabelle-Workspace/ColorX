@@ -16,7 +16,7 @@ describe("UploadForm", () => {
   it("renders heading and help text", () => {
     renderWithProviders(<UploadForm onParsed={() => {}} />);
     expect(
-      screen.getByRole("heading", { name: /upload a light theme/i })
+      screen.getByRole("heading", { name: /upload a theme/i })
     ).toBeInTheDocument();
     expect(
       screen.getByText(/Drop any JSON, JS, TS, or CSS file/i)
@@ -35,7 +35,7 @@ describe("UploadForm", () => {
     ).toBeInTheDocument();
   });
 
-  it("calls onParsed with a complete theme when a full JSON file is uploaded", async () => {
+  it("calls onParsed with extracted tokens for a full JSON file", async () => {
     const onParsed = vi.fn();
     const user = userEvent.setup();
     renderWithProviders(<UploadForm onParsed={onParsed} />);
@@ -47,12 +47,12 @@ describe("UploadForm", () => {
       expect(onParsed).toHaveBeenCalledTimes(1);
     });
     const result = onParsed.mock.calls[0][0];
-    expect(result.theme).toEqual(VALID_THEME);
     expect(result.fileName).toBe("tokens.json");
-    expect(result.mapped).toBeGreaterThan(0);
+    expect(Array.isArray(result.tokens)).toBe(true);
+    expect(result.tokens.length).toBeGreaterThan(0);
   });
 
-  it("succeeds with a sparse file that only has primary -- no missing-token error", async () => {
+  it("succeeds with a sparse single-token CSS file", async () => {
     const onParsed = vi.fn();
     const user = userEvent.setup();
     renderWithProviders(<UploadForm onParsed={onParsed} />);
@@ -60,27 +60,6 @@ describe("UploadForm", () => {
     const sparse = `:root { --primary: #6366f1; }`;
     const input = screen.getByLabelText(/theme file/i) as HTMLInputElement;
     await user.upload(input, makeFile(sparse, "tokens.css"));
-
-    await waitFor(() => {
-      expect(onParsed).toHaveBeenCalledTimes(1);
-    });
-    expect(screen.queryByRole("alert")).not.toBeInTheDocument();
-    const result = onParsed.mock.calls[0][0];
-    expect(result.theme.primary).toBe("#6366f1");
-    expect(result.synthesized).toBeGreaterThan(0);
-  });
-
-  it("succeeds with arbitrary token names by detecting primary heuristically", async () => {
-    const onParsed = vi.fn();
-    const user = userEvent.setup();
-    renderWithProviders(<UploadForm onParsed={onParsed} />);
-
-    const arbitrary = `:root {
-      --my-weird-name-1: #6366f1;
-      --my-weird-name-2: #ffffff;
-    }`;
-    const input = screen.getByLabelText(/theme file/i) as HTMLInputElement;
-    await user.upload(input, makeFile(arbitrary, "tokens.css"));
 
     await waitFor(() => {
       expect(onParsed).toHaveBeenCalledTimes(1);
@@ -102,7 +81,7 @@ describe("UploadForm", () => {
     expect(onParsed).not.toHaveBeenCalled();
   });
 
-  it("announces success via the live region with mapped/synthesized counts", async () => {
+  it("announces success via the live region", async () => {
     const user = userEvent.setup();
     renderWithProviders(<UploadForm onParsed={() => {}} />);
 
@@ -114,7 +93,6 @@ describe("UploadForm", () => {
         /Parsed brand\.json/i
       );
     });
-    expect(screen.getByRole("status")).toHaveTextContent(/synthesized/i);
   });
 
   it("has no axe violations in idle state", async () => {

@@ -1,21 +1,12 @@
 import { useId, useRef, useState, type ChangeEvent, type DragEvent } from "react";
 import { Upload, FileText } from "lucide-react";
-import {
-  extractTokens,
-  buildLightThemeFromTokens,
-  type BuildRecommendation,
-  type ThemeColors,
-} from "@colorx/core";
+import { extractTokens, type ExtractedToken } from "@colorx/core";
 import { Button } from "@/components/ui/button";
 import { Stack } from "@/components/layout/primitives";
 import { useAnnounce } from "@/hooks/useAnnounce";
 
 export interface UploadResult {
-  theme: ThemeColors;
-  recommendations: BuildRecommendation[];
-  mapped: number;
-  synthesized: number;
-  totalExtracted: number;
+  tokens: ExtractedToken[];
   fileName: string;
 }
 
@@ -51,15 +42,15 @@ export function UploadForm({ onParsed }: UploadFormProps) {
       setError({
         fileName: file.name,
         message:
-          "We could not find any color tokens in this file. Make sure your file contains hex, rgb, hsl, or shadcn-style HSL color values.",
+          "We could not find any color tokens in this file. Make sure it has hex, rgb, hsl, or shadcn-style HSL color values.",
       });
       setParsedFileName(null);
       announce(`No color tokens found in ${file.name}.`);
       return;
     }
 
-    const built = buildLightThemeFromTokens(extracted.tokens);
-    if (!built.ok) {
+    const usable = extracted.tokens.filter((t) => t.hex !== null).length;
+    if (usable === 0) {
       setError({
         fileName: file.name,
         message:
@@ -72,16 +63,9 @@ export function UploadForm({ onParsed }: UploadFormProps) {
 
     setParsedFileName(file.name);
     announce(
-      `Parsed ${file.name}. ${built.mapped} colors mapped, ${built.synthesized} synthesized. Three dark theme options generated.`
+      `Parsed ${file.name}. ${usable} usable colors extracted.`
     );
-    onParsed({
-      theme: built.theme,
-      recommendations: built.recommendations,
-      mapped: built.mapped,
-      synthesized: built.synthesized,
-      totalExtracted: extracted.tokens.length,
-      fileName: file.name,
-    });
+    onParsed({ tokens: extracted.tokens, fileName: file.name });
   }
 
   function handleFileChange(e: ChangeEvent<HTMLInputElement>): void {
@@ -118,12 +102,12 @@ export function UploadForm({ onParsed }: UploadFormProps) {
   return (
     <Stack as="section" gap="md" aria-labelledby={`${inputId}-label`}>
       <h2 id={`${inputId}-label`} className="text-xl font-semibold">
-        Upload a light theme
+        Upload a theme
       </h2>
       <p id={helpId} className="text-sm text-muted-foreground">
-        Drop any JSON, JS, TS, or CSS file with color tokens. We will extract
-        what we can recognize, fill in any gaps from your primary color, and
-        generate three dark theme options. Files are parsed locally and never
+        Drop any JSON, JS, TS, or CSS file with color tokens. We will detect
+        whether it is a light or dark theme and generate three accessible
+        variants of the opposite polarity. Files are parsed locally and never
         uploaded to a server.
       </p>
 

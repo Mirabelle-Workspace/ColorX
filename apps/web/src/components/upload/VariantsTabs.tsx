@@ -3,8 +3,10 @@ import { motion, AnimatePresence } from "motion/react";
 import { Download } from "lucide-react";
 import {
   type DarkVariant,
-  type DarkVariantId,
+  type LightVariant,
+  type ThemeMode,
   variantToCss,
+  lightVariantToCss,
 } from "@colorx/core";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card } from "@/components/ui/card";
@@ -14,17 +16,32 @@ import { ThemePreview } from "@/components/theme-display/ThemePreview";
 import { CopyButton } from "@/components/output/CopyButton";
 import { useAnnounce } from "@/hooks/useAnnounce";
 
-interface DarkVariantsTabsProps {
-  variants: DarkVariant[];
+type AnyVariant = DarkVariant | LightVariant;
+
+interface VariantsTabsProps {
+  variants: AnyVariant[];
+  mode: ThemeMode;
   sourceName: string;
+  heading: string;
 }
 
-export function DarkVariantsTabs({ variants, sourceName }: DarkVariantsTabsProps) {
+function variantCss(variant: AnyVariant, mode: ThemeMode): string {
+  return mode === "dark"
+    ? variantToCss(variant as DarkVariant)
+    : lightVariantToCss(variant as LightVariant);
+}
+
+export function VariantsTabs({
+  variants,
+  mode,
+  sourceName,
+  heading,
+}: VariantsTabsProps) {
   const headingId = useId();
   const announce = useAnnounce();
-  const [activeId, setActiveId] = useState<DarkVariantId>(variants[0].id);
+  const [activeId, setActiveId] = useState<string>(variants[0].id);
   const active = variants.find((v) => v.id === activeId) ?? variants[0];
-  const css = variantToCss(active);
+  const css = variantCss(active, mode);
 
   function handleDownload(): void {
     const blob = new Blob([css], { type: "text/css" });
@@ -32,12 +49,12 @@ export function DarkVariantsTabs({ variants, sourceName }: DarkVariantsTabsProps
     const link = document.createElement("a");
     const baseName = sourceName.replace(/\.[^.]+$/, "");
     link.href = url;
-    link.download = `${baseName}-dark-${active.id}.css`;
+    link.download = `${baseName}-${mode}-${active.id}.css`;
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
     URL.revokeObjectURL(url);
-    announce(`Downloaded ${active.name} dark theme.`);
+    announce(`Downloaded ${active.name} ${mode} theme.`);
   }
 
   function handleTabChange(value: string | number | null): void {
@@ -45,17 +62,32 @@ export function DarkVariantsTabs({ variants, sourceName }: DarkVariantsTabsProps
     const next = variants.find((v) => v.id === value);
     if (!next) return;
     setActiveId(next.id);
-    announce(`${next.name} dark theme selected.`);
+    announce(`${next.name} ${mode} theme selected.`);
   }
+
+  const cardClass =
+    mode === "dark"
+      ? "border-white/10 bg-[#1e1e1e] p-6 text-[#e0e0e0]"
+      : "border-border bg-white p-6 text-foreground";
+
+  const codeCardClass =
+    mode === "dark"
+      ? "bg-[#1e1e1e] text-[#d4d4d4]"
+      : "bg-[#f7f7f8] text-[#1f1f23]";
+
+  const codeHeaderClass =
+    mode === "dark"
+      ? "border-white/5 text-[#aaa]"
+      : "border-border text-muted-foreground";
 
   return (
     <Stack as="section" gap="md" aria-labelledby={headingId}>
       <h2 id={headingId} className="text-xl font-semibold">
-        Dark theme options
+        {heading}
       </h2>
 
       <Tabs value={activeId} onValueChange={handleTabChange}>
-        <TabsList aria-label="Dark theme variants">
+        <TabsList aria-label={`${mode} theme variants`}>
           {variants.map((v) => (
             <TabsTrigger key={v.id} value={v.id}>
               {v.name}
@@ -74,30 +106,32 @@ export function DarkVariantsTabs({ variants, sourceName }: DarkVariantsTabsProps
           exit={{ opacity: 0, y: -12 }}
           transition={{ type: "spring", stiffness: 300, damping: 30 }}
         >
-          <Card className="border-white/10 bg-[#1e1e1e] p-6 text-[#e0e0e0]">
+          <Card className={cardClass}>
             <h3 className="mb-4 px-4 text-lg font-bold">{active.name}</h3>
             <ThemePreview
               theme={active.colors}
               contrast={active.contrast}
-              mode="dark"
+              mode={mode}
             />
           </Card>
         </motion.div>
       </AnimatePresence>
 
       <Stack gap="xs" aria-label={`${active.name} CSS output`}>
-        <Card className="bg-[#1e1e1e] text-[#d4d4d4]">
-          <div className="flex items-center justify-between border-b border-white/5 px-6 py-3">
-            <span className="text-xs font-semibold uppercase tracking-widest text-[#aaa]">
+        <Card className={codeCardClass}>
+          <div
+            className={`flex items-center justify-between border-b px-6 py-3 ${codeHeaderClass}`}
+          >
+            <span className="text-xs font-semibold uppercase tracking-widest">
               CSS Variables
             </span>
             <div className="flex items-center gap-2">
-              <CopyButton text={css} label={`${active.name} dark theme CSS`} />
+              <CopyButton text={css} label={`${active.name} ${mode} theme CSS`} />
               <Button
                 variant="secondary"
                 size="sm"
                 onClick={handleDownload}
-                aria-label={`Download ${active.name} dark theme CSS file`}
+                aria-label={`Download ${active.name} ${mode} theme CSS file`}
               >
                 <Download className="mr-1 size-4" aria-hidden="true" />
                 Download
