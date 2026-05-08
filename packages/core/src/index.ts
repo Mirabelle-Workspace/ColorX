@@ -30,3 +30,5 @@ export { extractTokens } from "./token-extract";
 export { buildLightThemeFromTokens, buildThemeFromTokens } from "./theme-build";
 export { generateDarkVariants, variantToCss } from "./dark-variants";
 export { generateLightVariants, lightVariantToCss } from "./light-variants";
+export { extractFigmaFileKey, extractTokensFromFigma } from "./figma";
+export type { FigmaImportResult } from "./figma";
