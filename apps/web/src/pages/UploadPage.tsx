@@ -6,7 +6,8 @@ import {
   generateLightVariants,
   type ThemeMode,
 } from "@colorx/core";
-import { UploadForm, type UploadResult } from "@/components/upload/UploadForm";
+import { SourceTabs } from "@/components/upload/SourceTabs";
+import { type UploadResult } from "@/components/upload/UploadForm";
 import { VariantsTabs } from "@/components/upload/VariantsTabs";
 import { Recommendations } from "@/components/upload/Recommendations";
 import { Button } from "@/components/ui/button";
@@ -23,19 +24,17 @@ export function UploadPage() {
     return buildThemeFromTokens(uploaded.tokens, { forceMode });
   }, [uploaded, forceMode]);
 
-  // The variants we show are the OPPOSITE polarity of the uploaded theme.
-  // If you uploaded a light theme, you get dark variants and vice versa.
-  const targetMode: ThemeMode | null = useMemo(() => {
+  // Always generate BOTH light and dark variants so the user can pick
+  // either set or download both.
+  const lightVariants = useMemo(() => {
     if (!built || !built.ok) return null;
-    return built.mode === "light" ? "dark" : "light";
+    return generateLightVariants(built.theme);
   }, [built]);
 
-  const variants = useMemo(() => {
-    if (!built || !built.ok || !targetMode) return null;
-    return targetMode === "dark"
-      ? generateDarkVariants(built.theme)
-      : generateLightVariants(built.theme);
-  }, [built, targetMode]);
+  const darkVariants = useMemo(() => {
+    if (!built || !built.ok) return null;
+    return generateDarkVariants(built.theme);
+  }, [built]);
 
   function handleParsed(result: UploadResult): void {
     setUploaded(result);
@@ -54,17 +53,17 @@ export function UploadPage() {
           Convert Theme
         </h1>
         <p className="max-w-2xl text-muted-foreground">
-          Upload a light theme or a dark theme.
+          Bring tokens from a file, a Figma file, or a PDF.
         </p>
         <p className="max-w-2xl text-muted-foreground">
-          Get three accessible variants of the opposite polarity, each WCAG AA verified.
+          Get accessible light AND dark theme options, each WCAG AA verified.
         </p>
       </Stack>
 
       <Stack gap="lg">
-        <UploadForm onParsed={handleParsed} />
+        <SourceTabs onParsed={handleParsed} />
 
-        {built && built.ok && targetMode && variants && (
+        {built && built.ok && lightVariants && darkVariants && (
           <>
             <Flex
               align="center"
@@ -80,7 +79,7 @@ export function UploadPage() {
                 </span>{" "}
                 detected{" "}
                 <span className="text-muted-foreground">
-                  -- generating {targetMode} variants
+                  -- showing both light and dark variants
                 </span>
               </p>
               <Button
@@ -97,14 +96,17 @@ export function UploadPage() {
             </Flex>
 
             <VariantsTabs
-              variants={variants}
-              mode={targetMode}
+              variants={lightVariants}
+              mode="light"
               sourceName={uploaded!.fileName}
-              heading={
-                targetMode === "dark"
-                  ? "Dark theme options"
-                  : "Light theme options"
-              }
+              heading="Light theme options"
+            />
+
+            <VariantsTabs
+              variants={darkVariants}
+              mode="dark"
+              sourceName={uploaded!.fileName}
+              heading="Dark theme options"
             />
 
             {built.recommendations.length > 0 && (
