@@ -18,7 +18,8 @@ export function CTABottom() {
             </CardTitle>
             <CardDescription className="text-[#aaa]">
               Pick a color and get accessible light and dark themes in seconds.
-              Already have a light theme? Upload it to get three dark options.
+              Already have a theme? Upload it and we will generate three
+              accessible variants of the opposite polarity.
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -33,7 +34,7 @@ export function CTABottom() {
                 onClick={() => navigate("/upload")}
               >
                 <Upload className="mr-2 size-4" aria-hidden="true" />
-                Upload a Light Theme
+                Convert a Theme
               </Button>
             </Flex>
           </CardContent>

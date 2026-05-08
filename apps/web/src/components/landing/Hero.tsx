@@ -33,7 +33,7 @@ export function Hero() {
                 onClick={() => navigate("/upload")}
               >
                 <Upload className="mr-2 size-4" aria-hidden="true" />
-                Upload a Light Theme
+                Convert a Theme
               </Button>
             </Flex>
           </Stack>

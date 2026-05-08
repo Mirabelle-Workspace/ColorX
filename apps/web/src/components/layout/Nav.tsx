@@ -1,4 +1,4 @@
-import { Link } from "react-router";
+import { Link, useNavigate } from "react-router";
 import { Moon, Sun, Accessibility, Leaf, Upload } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Tooltip, TooltipTrigger, TooltipContent } from "@/components/ui/tooltip";
@@ -6,6 +6,7 @@ import { Flex } from "@/components/layout/primitives";
 import { usePreferences } from "@/hooks/usePreferences";
 
 export function Nav() {
+  const navigate = useNavigate();
   const { dark, a11y, lowCarbon, toggleDark, toggleA11y, toggleLowCarbon } = usePreferences();
 
   return (
@@ -20,14 +21,16 @@ export function Nav() {
         <Link to="/" className="text-lg font-bold tracking-tight">
           ColorX
         </Link>
-        <Link
-          to="/upload"
-          className="inline-flex items-center gap-1.5 rounded-md border border-border px-3 py-1.5 text-sm font-medium text-foreground transition-colors hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
-          aria-label="Upload a light theme to convert to dark"
+        <Button
+          type="button"
+          variant="outline"
+          size="sm"
+          onClick={() => navigate("/upload")}
+          aria-label="Convert a theme between light and dark"
         >
-          <Upload className="size-3.5" aria-hidden="true" />
-          Upload Theme
-        </Link>
+          <Upload className="mr-1.5 size-3.5" aria-hidden="true" />
+          Convert Theme
+        </Button>
       </Flex>
 
       <Flex align="center" gap="xs">
