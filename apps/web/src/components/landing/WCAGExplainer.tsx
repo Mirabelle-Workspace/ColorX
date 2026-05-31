@@ -32,8 +32,8 @@ export function WCAGExplainer() {
             WCAG Contrast Levels Explained
           </h2>
           <p className="max-w-2xl text-muted-foreground">
-            The Web Content Accessibility Guidelines define minimum contrast ratios
-            to ensure text is readable by people with low vision.
+            WCAG defines minimum contrast ratios to help ensure text and interface
+            elements remain readable across a range of visual needs.
           </p>
         </Stack>
       </AnimateIn>

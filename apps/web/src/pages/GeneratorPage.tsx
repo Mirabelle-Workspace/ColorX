@@ -14,10 +14,10 @@ export function GeneratorPage() {
     <Container as="article" className="pb-12">
       <Stack as="header" gap="xs" className="mb-8 items-center text-center">
         <h1 className="text-3xl font-extrabold tracking-tight">
-          Generate Your Theme
+          Theme Generator
         </h1>
         <p className="text-muted-foreground">
-          Pick a color. Get WCAG and APCA-compliant light and dark themes instantly.
+          Enter a source color to generate accessible light and dark theme tokens with contrast validation.
         </p>
       </Stack>
 

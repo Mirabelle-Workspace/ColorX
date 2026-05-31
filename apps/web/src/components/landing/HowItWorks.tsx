@@ -6,21 +6,21 @@ import { AnimateIn } from "@/components/common/AnimateIn";
 const STEPS = [
   {
     number: 1,
-    title: "Pick a Color",
+    title: "Choose a source color",
     description:
-      "Use the color picker or type any hex code. This becomes your brand's primary color -- the foundation of both themes.",
+      "Start with a hex color that represents your brand, product, or visual direction.",
   },
   {
     number: 2,
-    title: "Themes Are Generated",
+    title: "Generate theme tokens",
     description:
-      "The engine converts your color to HSL, then derives 15 design tokens for light and dark modes: backgrounds, surfaces, text hierarchy, borders, and semantic colors.",
+      "ColorX derives a structured set of light and dark theme tokens for common UI roles.",
   },
   {
     number: 3,
-    title: "Contrast Is Enforced",
+    title: "Validate accessibility",
     description:
-      "Every text/background pair is checked against WCAG 2.1 and APCA. Colors that fail are automatically adjusted along their lightness axis until they pass.",
+      "The generated theme is checked against WCAG 2.1 and APCA, and failing values are adjusted to meet the target contrast thresholds.",
   },
 ];
 
@@ -33,7 +33,7 @@ export function HowItWorks() {
             How It Works
           </h2>
           <p className="max-w-xl text-muted-foreground">
-            Three steps. No design degree required.
+            A simple workflow for building accessible color themes.
           </p>
         </Stack>
       </AnimateIn>

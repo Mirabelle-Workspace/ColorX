@@ -16,25 +16,25 @@ const FEATURES: Feature[] = [
     icon: <ScanEye className="h-5 w-5" />,
     title: "WCAG + APCA Contrast Audit",
     description:
-      "Every foreground/background pair is tested against WCAG 2.1 AA/AAA and APCA Lc thresholds. See exact ratios and pass/fail status for each.",
+      "Check foreground and background pairs against WCAG 2.1 and APCA thresholds, with clear pass/fail reporting.",
   },
   {
     icon: <Code className="h-5 w-5" />,
-    title: "Copy-Paste CSS Variables",
+    title: "CSS Custom Properties Export",
     description:
-      "Get a complete CSS block with custom properties that support both prefers-color-scheme media queries and data-theme attribute toggling.",
+      "Export a token set as CSS variables for use in applications that support light and dark themes.",
   },
   {
     icon: <Palette className="h-5 w-5" />,
-    title: "Design Tokens",
+    title: "Design Token Generation",
     description:
-      "Background, surface, primary, text hierarchy, borders, and semantic colors. Everything you need for a production-ready color system.",
+      "Generate tokens for backgrounds, surfaces, text, borders, and semantic UI states from a single source color.",
   },
   {
     icon: <Eye className="h-5 w-5" />,
     title: "Color Vision Simulation",
     description:
-      "Preview how your themes appear to people with deuteranopia, protanopia, tritanopia, and achromatopsia before shipping.",
+      "Preview how generated themes appear across common color vision deficiency modes.",
   },
 ];
 
@@ -45,10 +45,10 @@ export function Features() {
         <AnimateIn>
           <Stack gap="lg" className="mb-12 items-center text-center">
             <h2 className="text-3xl font-extrabold tracking-tight">
-              What You Get
+              Features
             </h2>
             <p className="text-muted-foreground">
-              Everything you need to go from a single hex code to a production-ready color system.
+              A focused workflow for generating, validating, and exporting accessible color themes.
             </p>
           </Stack>
         </AnimateIn>

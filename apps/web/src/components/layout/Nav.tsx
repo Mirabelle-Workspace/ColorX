@@ -1,5 +1,5 @@
 import { Link, useNavigate } from "react-router";
-import { Moon, Sun, Accessibility, Leaf, Upload } from "lucide-react";
+import { Moon, Sun, Accessibility, Leaf, Upload, ExternalLink } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Tooltip, TooltipTrigger, TooltipContent } from "@/components/ui/tooltip";
 import { Flex } from "@/components/layout/primitives";
@@ -34,6 +34,18 @@ export function Nav() {
       </Flex>
 
       <Flex align="center" gap="xs">
+        <Button
+          variant="ghost"
+          size="sm"
+          onClick={() =>
+            window.open("https://www.mirabelledoiron.com/", "_blank", "noopener,noreferrer")
+          }
+          aria-label="Portfolio (opens in new tab)"
+        >
+          <span>Portfolio</span>
+          <ExternalLink className="ml-1 size-4" aria-hidden="true" />
+        </Button>
+
         <Tooltip>
           <TooltipTrigger
             render={

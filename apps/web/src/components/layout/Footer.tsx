@@ -7,7 +7,15 @@ export function Footer() {
     <footer className="w-full border-t border-border px-8 py-6">
       <Flex align="center" justify="between" className="mx-auto max-w-5xl">
         <p className="text-sm text-muted-foreground">
-          {new Date().getFullYear()} Mirabelle Doiron
+          {new Date().getFullYear()}{" "}
+          <a
+            href="https://www.mirabelledoiron.com/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="hover:text-foreground hover:underline"
+          >
+            Mirabelle Doiron
+          </a>
         </p>
 
         <Flex align="center" gap="xs">

@@ -24,8 +24,6 @@ export function UploadPage() {
     return buildThemeFromTokens(uploaded.tokens, { forceMode });
   }, [uploaded, forceMode]);
 
-  // Always generate BOTH light and dark variants so the user can pick
-  // either set or download both.
   const lightVariants = useMemo(() => {
     if (!built || !built.ok) return null;
     return generateLightVariants(built.theme);
@@ -50,13 +48,13 @@ export function UploadPage() {
     <Container as="article" className="pb-12">
       <Stack as="header" gap="xs" className="mb-8 items-center text-center">
         <h1 className="text-3xl font-extrabold tracking-tight">
-          Convert Theme
+          Import Theme
         </h1>
         <p className="max-w-2xl text-muted-foreground">
-          Bring tokens from a file, a Figma file, or a PDF.
+          Import tokens from supported sources and convert them into accessible theme variants.
         </p>
         <p className="max-w-2xl text-muted-foreground">
-          Get accessible light AND dark theme options, each WCAG AA verified.
+          Review how ColorX mapped imported values and generated accessible light and dark options.
         </p>
       </Stack>
 
